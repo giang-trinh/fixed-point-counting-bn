@@ -1,0 +1,11 @@
+\section{Conclusion}\label{sec:conclusion}
+
+This paper addresses the problem of counting minimal trap spaces and fixed points in Boolean networks.
+These are critical concepts in understanding of long-term BN behavior and are relevant across a diverse set of application domains, including systems biology, abstract argumentation, and logic programming. Trap space counting is especially important in systems biology: due to the inherent robustness of biological phenomena, biologically motivated BNs admit a high degree of redundancy, resulting in a vast repertoire of closely related trap spaces (or fixed points) that cannot be explored solely through enumeration.
+
+Here, we propose novel methods for determining trap space and fixed point counts using approximate answer set counting, thus entirely avoiding costly enumeration. We apply this methodology to three biologically motivated problems: (a) general counting; (b) counting occurrences of a known biological phenotype, and (c) projected counting of perturbations that ensure the emergence of a known biological phenotype. The last problem is particularly timely, as it allows us to determine \emph{perturbation robustness}~\cite{BBPSS2023,kitano2007towards}, a vital measure that determines how stable a phenotype appears under external stimuli. Through extensive experiments on a diverse set of benchmarks, we show that approximate counting substantially improves the feasibility of counting in this domain, outperforming traditional enumeration-based and exact approaches whenever applicable.
+
+Our work opens several promising directions for future research:
+First is to integrate reduction techniques---previously shown to be effective in BN analysis~\cite{Rozum2021,ST23,TP2024}---to further improve counting accuracy and scalability. 
+Second direction explores hybrid strategies that combine exact and approximate counting, aiming to strike a balance between efficiency and precision. 
+Finally, a deeper investigation into the computational complexity of the counting problems would help refine our understanding of their theoretical underpinnings.

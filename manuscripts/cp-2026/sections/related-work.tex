@@ -1,0 +1,26 @@
+\section{Related Work}\label{sec:related-work}
+
+\paragraph{ASP-Based Computation of Fixed Points and Minimal Trap Spaces.}
+Several ASP encodings have been proposed to characterize fixed points and minimal trap spaces in BNs.
+In many cases, an ASP encoding for fixed points is derived from its minimal trap space counterpart by adding {\em integrity constraints} to capture the specific properties of fixed points~\cite{VML2024,Trinh2023}.
+The first ASP encoding that requires the computation of {\em prime implicants} for each Boolean function was proposed and implemented in~\cite{HAH2015}.
+A major bottleneck of this encoding is that computing even a single prime implicant is NP-hard and the total number of prime implicants can be exponential in the number of function inputs~\cite{CM78}.
+Subsequent encodings~\cite{Paulev2020,VML2024,Trinh2023} that were proposed to overcome this bottleneck still suffer from scalability and efficiency issues, particularly for very large and complex models, primarily because they require the {\em disjunctive normal forms} of all the Boolean functions of the original BN.
+For fixed points, the ASP encoding by Trinh et al.~\cite{TBS2023} (called \fasp) uses a {\em negation normal form} for each Boolean function, which is much more efficient to obtain.
+This encoding was later generalized for minimal trap spaces~\cite{TBPS2024} (called \tsconj); however, when dealing with {\em unsafe formulas} that might yield incorrect solutions, it still requires a disjunctive normal form to ensure the correctness.
+%Fortunately, unsafe formulas are quite rare in real-world models~\cite{TBPS2024}.
+
+\paragraph{BN Encoding of Normal Logic Programs.} The theoretical work by Inoue~\cite{Inoue2011} was among the first to establish a connection between ASP and BNs.
+It defines a BN encoding for finite ground normal logic programs, which relies on the notion of the Clark’s completion~\cite{clark1978}, and points out that the two-valued models of the Clark's completion of a finite ground normal logic program one-to-one correspond to the fixed points of the encoded BN.
+The subsequent work~\cite{IS2012} points out that the strict supported classes of a finite ground normal logic program one-to-one correspond to the synchronous attractors of the encoded BN.
+Very recently, Trinh et al.~\cite{TBSF2024} related the regular models in a finite ground normal logic program and the minimal trap spaces in the respective BN, and further applied these theoretical results to explore graphical conditions for the existence, uniqueness, and number of regular models.
+
+\paragraph{SAT Characterization of Fixed Points.} The set of fixed points of a BN \(\bn\) can be characterized as the set of {\em satisfying assignments} of the propositional formula \(\bigwedge_{v \in \var{\bn}}\left(v \leftrightarrow f_v\right )\)~\cite{EM2011}.
+Hence, we can apply \#SAT tools~\cite{Thurley2006,CSV2013,SRSM19} to counting the number of fixed points of a BN.
+To the best of our knowledge, to date, there is no SAT characterization for the set of minimal trap spaces of a BN.
+
+\paragraph{Answer Set Counting.} For general ASP programs, \#ASP is \(\#\cdot\text{coNP-complete}\)~\cite{FHMW2017},
+while \#ASP is \(\#\cdot\text{P-complete}\) for normal ASP programs, which follows from standard reductions~\cite{Janhunen2006}.
+The projected answer set counting \#PASP is simply \(\Sigma_2^p\)-complete if the set of projection atoms is empty; otherwise, the complexity is \(\#\cdot\Sigma_2^p\)-complete~\cite{FH2019}.
+Fichte et al.~\cite{FH2019,FHMW2017} exploited the {\em tree decomposition}-based technique for counting answer sets.
+Kabir et al.~\cite{KESHFM22} introduced the hashing-based approximate counting technique for answer set counting. %\vangiang{May mention more related papers}

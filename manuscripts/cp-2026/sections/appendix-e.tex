@@ -1,0 +1,40 @@
+\section{Phenotype robustness analysis, case study of Interferon 1 model}
+\label{sec:case-study}
+
+Model no. 118 in the BBM dataset~\cite{pastva2023repository} represents an interaction network related to the activation of the so-called \emph{Interferon 1}, a biochemical species closely tied to immune response present in T-cells. The model was initially derived using~\cite{SVATSAJ2020} and then later tuned by domain experts to correctly capture relevant biological phenotypes. It consists of 121 variables, of which 55 are ``inputs'', meaning they are not regulated by other variables.
+
+The model defines three phenotype variables, \emph{ISG} (full name \emph{ISG expression antiviral response phenotype}), \emph{PCK} (full name \emph{Proinflammatory cytokine expression inflammation phenotype}), and \emph{IFN} (full name \emph{Type 1 IFN response phenotype}). As these are separate output variables of the network, each trap space can exhibit any combination of active and inactive phenotype variables.
+
+Since the model defines response of T-cells to immunological stimuli and environmental factors, it is important to understand how these mechanisms respond to potential permanent perturbations, either due to genetic mutations or therapeutic treatments. Here, we provide an overview of the model phenotypes through the lens of phenotype robustness.
+
+For simplicity, we selected 20 variables of the model as potential perturbation targets. In reality, this choice would be further influenced by known genetic risk factors or drug targets. Consequently, this choice results in $3^{20} = 3486784401$ admissible perturbations in our Boolean system. We then consider two phenotype variants: First, where a single phenotype variable is expected to be $1$ and the remaining phenotype variables are unconstrained (i.e. they can be $0$, $1$, or $\star$), yielding three combinations. And second, more specific one, where each phenotype variable is fixed to either $1$ or $0$, yielding eight combinations.
+
+The results for C-MTS-3 and the subsequent robustness computation are given in Table~\ref{table:perturbation-robustness}. Here, we can notice several biologically interesting outcomes:
+
+\begin{itemize}
+	\item Regardless of perturbation, the network always exhibits a trap space with the \emph{ISG} phenotype. The remaining phenotypes are usually also present ($r = 0.606$ and $r = 0.663$), but are significantly less robust than \emph{ISG}. This indicates that (assuming favorable environmental conditions), expression of ISG as a response to viral activity is robust and cannot be disrupted by a perturbation.
+	\item Among the fully defined phenotypes, $010$ and $000$ are the least robust while $111$ is the most robust. This shows the general tendency of T-cells to reliably and consistently respond to immunological stimuli, as the $111$ phenotype indicates the maximal level of immunological activity.
+	\item Even though \emph{ISG} is the most robust phenotype when taken in isolation, phenotypes with active \emph{IFN} generally achieve higher robustness when other phenotypes are required to be inactive.
+\end{itemize}
+
+Such outcomes serve several functions: First, they can be used to validate (or refute) assumptions about the biological tendencies of the studied system. Second, if observations do not match model predictions, better quantitative understanding can provide possible sources of further model refinement. Third, this knowledge can enable us to better (more reliably or efficiently) select a phenotype that should be targeted by a treatment among several related but distinct cellular phenotypes. Finally, note that the number of solutions in each case is significantly higher than what would be countable using standard enumeration, underscoring the importance of dedicated counting methods, and approximate counting in particular.
+
+\begin{table}
+	\centering
+	\caption{Phenotype robustness analysis for the Interferon 1 model. First three columns describe the desired phenotype ($-$ meaning the value is unconstrained). The C-MTS-3 column lists the number of perturbations for which said phenotype appears in the network. Finally, robustness $r$ indicates what portion of the possible perturbations still enable the corresponding phenotype.}
+	\begin{tabular}{c | c | c | c | c}
+		ISG & PCK & IFN & C-MTS-3 & Robustness ($r$) \\\hline
+		1 & - & - & 3486784401 & 1.000 \\
+		- & 1 & - & 2114072298 & 0.606 \\
+		- & - & 1 & 2313362673 & 0.663 \\\hline
+		0 & 0 & 0 & 478296900 & 0.137 \\
+		1 & 0 & 0 & 621785970 & 0.178 \\
+		0 & 1 & 0 & 478296900 & 0.137 \\	
+		0 & 0 & 1 & 813104730 & 0.233 \\	
+		1 & 1 & 0 & 782989740 & 0.224 \\
+		1 & 0 & 1 & 1096362783 & 0.314 \\
+		0 & 1 & 1 & 813104730 & 0.233 \\
+		1 & 1 & 1 & 1409735826 & 0.404 \\
+	\end{tabular}
+	\label{table:perturbation-robustness}
+\end{table}

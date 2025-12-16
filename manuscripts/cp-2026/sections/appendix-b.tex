@@ -1,0 +1,17 @@
+\section{Details of Example ASP Programs}\label{sec:detailed-ASP-programs}
+
+The ASP program \(\tsconjp{f}\) considered in~\Cref{exam:third-MTS-projected} is:
+\begin{align*}
+	&\pos{a} \vee \ngt{a} \leftarrow \top \quad \quad \pos{a} \leftarrow \pos{a}, \ngt{b} \quad \quad \ngt{a} \leftarrow \aux{1} \quad \quad \aux{1} \leftarrow \ngt{a} \quad \quad \aux{1} \leftarrow \pos{b} \\
+	&\pos{b} \vee \ngt{b} \leftarrow \top \\
+	&\pos{b} \leftarrow \ngt{b^k}, \aux{2} \quad \quad \aux{2} \leftarrow \pos{b^o}  \quad \quad \aux{2} \leftarrow \pos{a} \\
+	&\ngt{b} \leftarrow \aux{3} \quad \quad \aux{3} \leftarrow \pos{b^k} \quad \quad \aux{3} \leftarrow \ngt{b^o}, \ngt{a} \\
+	&\pos{b^k} \vee \ngt{b^k} \leftarrow \top \quad \quad \pos{b^k} \leftarrow \pos{b^k} \quad \quad \ngt{b^k} \leftarrow \ngt{b^k} \\
+	&\pos{b^o} \vee \ngt{b^o} \leftarrow \top \qquad \pos{b^o} \leftarrow \pos{b^o}, \ngt{b^k} \qquad \ngt{b^o} \leftarrow \aux{4} \quad \aux{4} \leftarrow \ngt{b^o} \quad \aux{4} \leftarrow \pos{b^k}
+\end{align*}
+
+\noindent The ASP program \(\toaspalgname{\phen}\) considered in~\Cref{exam:third-MTS-projected} is:
+\begin{align*}
+	&\bot \leftarrow \pos{a} \qquad \bot \leftarrow \dng{\ngt{a}} \\
+	&\bot \leftarrow \pos{b} \qquad \bot \leftarrow \dng{\ngt{b}} \\
+\end{align*}

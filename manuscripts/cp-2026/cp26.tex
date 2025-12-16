@@ -1,0 +1,144 @@
+\documentclass[a4paper,USenglish,cleveref,thm-restate]{lipics-v2021}
+%This is a template for producing LIPIcs articles.
+%See lipics-v2021-authors-guidelines.pdf for further information.
+%for A4 paper format use option "a4paper", for US-letter use option "letterpaper"
+%for british hyphenation rules use option "UKenglish", for american hyphenation rules use option "USenglish"
+%for section-numbered lemmas etc., use "numberwithinsect"
+%for enabling cleveref support, use "cleveref"
+%for enabling autoref support, use "autoref"
+%for anonymousing the authors (e.g. for double-blind review), add "anonymous"
+%for enabling thm-restate support, use "thm-restate"
+%for enabling a two-column layout for the author/affilation part (only applicable for > 6 authors), use "authorcolumns"
+%for producing a PDF according the PDF/A standard, add "pdfa"
+% "anonymous" for double-blind peer-review
+
+%\pdfoutput=1 %uncomment to ensure pdflatex processing (mandatatory e.g. to submit to arXiv)
+\hideLIPIcs%uncomment to remove references to LIPIcs series (logo, DOI, ...), e.g. when preparing a pre-final version to be uploaded to arXiv or another public repository
+
+%\graphicspath{{./graphics/}}%helpful if your graphic files are in another directory
+
+%%% Added packagesfit
+\usepackage{tikz}
+\usetikzlibrary{arrows,shapes,automata,petri,positioning,fit}
+
+\usepackage{subcaption}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\input{sections/macro.tex}
+\bibliographystyle{plainurl}% the mandatory bibstyle
+
+\title{Scalable Counting of Minimal Trap Spaces and Fixed Points in Boolean Networks} %TODO Please add
+
+%%% Some options for the title
+% Efficient Approximate Counting of Minimal Trap Spaces in Boolean Networks
+% Counting Minimal Trap Spaces in Boolean Networks: Formulation, Computation, and Application
+
+%\titlerunning{} %TODO optional, please use if title is longer than one line
+
+\author{Mohimenul Kabir\footnote{Corresponding author}}{School of Computing, National University of Singapore, Singapore}{e0546090@u.nus.edu}{https://orcid.org/0000-0001-7551-0337}{}
+
+\author{Van-Giang Trinh}{Inria Saclay, EP Lifeware, Palaiseau, France}{van-giang.trinh@inria.fr}{https://orcid.org/0000-0001-6581-998X}{}%TODO mandatory, please use full name; only 1 author per \author macro; first two parameters are mandatory, other parameters can be empty. Please provide at least the name of the affiliation and the country. The full address is optional. Use additional curly braces to indicate the correct name splitting when the last name consists of multiple name parts.
+
+\author{Samuel Pastva}{Faculty of Informatics, Masaryk University, Botanicka 68a, Brno, 60200, Czechia}{xpastva@fi.muni.cz}{https://orcid.org/0000-0003-1993-0331}{}
+
+\author{Kuldeep S Meel}{School of Computer Science, Georgia Institute of Technology, Atlanta, USA}{meel@cs.toronto.edu}{https://orcid.org/0000-0001-9423-5270}{}
+
+\authorrunning{Kabir et al.} %TODO mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
+
+\Copyright{Mohimenul Kabir, Van-Giang Trinh, Samuel Pastva, Kuldeep S Meel} %TODO mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+
+\ccsdesc[100]{Theory of computation~Automated reasoning} %TODO mandatory: Please choose ACM 2012 classifications from https://dl.acm.org/ccs/ccs_flat.cfm
+\ccsdesc[500]{Computing methodologies~Logic programming and answer set programming}
+\ccsdesc[100]{Applied computing~Systems biology}
+
+\keywords{Computational systems biology, Boolean network, Fixed point, Trap space, Answer set counting, Projected counting, Abstract argumentation, Logic programming} %TODO mandatory; please add comma-separated list of keywords
+
+\category{Regular Paper} %optional, e.g. invited paper
+
+% Full papers, that can use up to 15 pages (references and appendices excluded).
+
+%\relatedversion{} %optional, e.g. full version hosted on arXiv, HAL, or other respository/website
+%\relatedversiondetails[linktext={opt. text shown instead of the URL}, cite=DBLP:books/mk/GrayR93]{Classification (e.g. Full Version, Extended Version, Previous Version}{URL to related version} %linktext and cite are optional
+
+\supplement{The extended version is available at: \url{https://arxiv.org/abs/2506.06013}.}%optional, e.g. related research data, source code, ... hosted on a repository like zenodo, figshare, GitHub, ...
+%\supplementdetails[linktext={opt. text shown instead of the URL}, cite=DBLP:books/mk/GrayR93, subcategory={Description, Subcategory}, swhid={Software Heritage Identifier}]{General Classification (e.g. Software, Dataset, Model, ...)}{URL to related version} %linktext, cite, and subcategory are optional
+
+\supplementdetails[subcategory={Source Code}, cite={}, swhid={}]{Software}{https://github.com/meelgroup/bn-counting}
+\supplementdetails[subcategory={}, cite={}, swhid={}]{Dataset}{https://zenodo.org/records/15141045}
+% \supplementdetails[subcategory={Source Code}]{Software}{https://github.com/meelgroup/bn-counting}
+
+\funding{The work was supported by the National University of Singapore and the Natural Sciences and Engineering Research Council of Canada (NSERC) [RGPIN-$2024$-$05956$].}%optional, to capture a funding statement, which applies to all authors. Please enter author specific funding statements as fifth argument of the \author macro.
+
+\acknowledgements{We are thankful to the reviewers for their feedback on the paper. The computational work of this paper was conducted in the Niagara cluster.}%optional
+
+\nolinenumbers %uncomment to disable line numbering
+
+
+%Editor-only macros:: begin (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\EventEditors{Roland H. C. Yap}
+\EventNoEds{1}
+\EventLongTitle{29th International Conference on Principles and Practice of Constraint Programming (CP 2023)}
+\EventShortTitle{CP 2023}
+\EventAcronym{CP}
+\EventYear{2023}
+\EventDate{August 27--31, 2023}
+\EventLocation{Toronto, Canada}
+\EventLogo{}
+\SeriesVolume{280}
+\ArticleNo{31}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setcounter{secnumdepth}{3}
+\begin{document}
+
+\maketitle
+
+%TODO mandatory: add short abstract of the document
+\begin{abstract}
+	Boolean Networks (BNs) serve as a fundamental modeling framework for capturing complex dynamical systems across various domains, including systems biology, computational logic, and artificial intelligence. 
+	A crucial property of BNs is the presence of trap spaces --- subspaces of the state space that, once entered, cannot be exited. 
+	Minimal trap spaces, in particular, play a significant role in analyzing the long-term behavior of BNs, making their efficient enumeration and counting essential.
+	The fixed points in BNs are a special case of minimal trap spaces.
+	In this work, we formulate several meaningful counting problems related to minimal trap spaces and fixed points in BNs.
+	These problems provide valuable insights both within BN theory (e.g., in probabilistic reasoning and dynamical analysis) and in broader application areas, including systems biology, abstract argumentation, and logic programming. 
+	To address these computational challenges, we propose novel methods based on {\em approximate answer set counting}, leveraging techniques from answer set programming.
+	Our approach efficiently approximates the number of minimal trap spaces and the number of fixed points without requiring exhaustive enumeration, making it particularly well-suited for large-scale BNs.
+	Our experimental evaluation on an extensive and diverse set of benchmark instances shows that our methods significantly improve the feasibility of counting minimal trap spaces and fixed points, paving the way for new applications in BN analysis and beyond.
+\end{abstract}
+
+
+\input{sections/introduction.tex}
+
+\input{sections/preliminaries.tex}
+\input{sections/related-work.tex}
+\input{sections/problem_formulate.tex}
+\input{sections/computation.tex}
+\input{sections/experiment.tex}
+
+\input{sections/conclusion.tex}
+
+
+
+%%
+%% Bibliography
+%%
+
+%% Please use bibtex,
+
+\bibliography{cp26}
+\clearpage
+\appendix
+
+%Appendices of up to 6 pages
+
+\input{sections/appendix-a.tex}
+
+\input{sections/appendix-b.tex}
+
+\input{sections/appendix-c.tex}
+\input{sections/appendix-d.tex}
+
+\input{sections/appendix-e.tex}
+
+\end{document}

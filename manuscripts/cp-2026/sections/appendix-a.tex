@@ -1,0 +1,245 @@
+\section{Details of Proofs}\label{sec:detailed-proofs}
+
+\rcmtscorrectness*
+\begin{proof}
+	To prove the correctness of~\Cref{theo:encoding-correctness-mts}, we reuse the correctness proof of Theorem $2$ of~\cite{TBPS2024}, which establishes that the answer sets of \(\tsconjp{f}\) one-to-one correspond to the minimal trap spaces of $\bn$.
+	%i.e., each minimal trap space $m$ of BN $\bn$ corresponds to an answer set $M$ of its corresponding \tsconj encoding.
+	Let us recall the translation between an answer set \(M\) of \(\tsconjp{f}\) and its respective minimal trap space \(m\) of \(f\): for each variable $v \in \var{\bn}$, \(m(v) = 1\) if and only if \(\pos{v} \in M \land \ngt{v} \not \in M\), \(m(v) = 0\) if and only if \(\pos{v} \not \in M \land \ngt{v} \in M\), and \(m(v) = \star\) if and only if \(\pos{v} \in M \land \ngt{v} \in M\).
+
+	We employ the theories of faceted answer set navigation~\cite{FGR2022} to prove the correctness of~\Cref{theo:encoding-correctness-mts}.
+	According to faceted navigation, for a program $P$ and an atom $a \in \at{P}$,  adding the integrity constraint $\{\bot \leftarrow a\}$ to program $P$ restricts the search space of $P$, where no answer set contains the atom $a$.
+	Conversely, adding the integrity constraint $\{\bot \leftarrow \dng{a}\}$ to program $P$ ensures that every answer set in the modified program contains the atom $a$.
+
+	We prove the correctness of our encoding for each trait $(v \leftrightarrow e) \in \phen$.
+	We show that~\Cref{alg:to_asp} selects {\em facets} in such a way that the answer sets of $\tsconjp{f} \cup \toaspalgname{\phen}$ one-to-one correspond to the minimal trap spaces satisfying $\phen$ of \(f\).
+	When $(v \leftrightarrow 1) \in \phen$ (line~\ref{line:true_value} in~\Cref{alg:to_asp}), two constraints are added to $\toaspalgname{\phen}$ to ensure that every answer set contains the atom $\pos{v}$ and none contains the atom $\ngt{v}$.
+	These constraints effectively assign the value $1$ to variable $v$.
+	When $(v \leftrightarrow 0) \in \phen$ (line~\ref{line:false_value} in~\Cref{alg:to_asp}), 
+	two added constraints ensure that every answer set contains the atom $\ngt{v}$ and none contains $\pos{v}$, thereby assigning the value $0$ to variable $v$.
+	When $(v \leftrightarrow \star) \in \phen$ (line~\ref{line:star_value} in~\Cref{alg:to_asp}), 
+	two added constraints ensure that every answer set contains both $\pos{v}$ and $\ngt{v}$. 
+	These constraints effectively assign the value $\star$ to variable $v$.
+
+	\noindent Combining all the cases of~\Cref{alg:to_asp}, we can claim the correctness of our encoding.
+\end{proof}
+% \begin{proof}
+% 	Recall that \(P\) only contains main atoms (i.e., \(\pos{v}\) or \(\ngt{v}\)) and auxiliary atoms \(\aux{i}\) in the heads of its rules, whereas \(\Sigma\) only contains atoms introduced by \tsconj encoding and \(\negprop\).
+% 	Let \(\Pi'\) be the propositional expression obtained from \(\prop\) by replacing the term \(v = b\) with an expression over \(\pos{v}\) and \(\ngt{v}\) (see Section~\ref{subsec:methods-second}).
+% 	For convenience, we consider an interpretation \(I\) as a mapping \(I \colon \at{P} \to \threed\) such that \(I(v) = 1\) if and only if \(v \in I\) and \(I(v) = 0\) if and only if \(v \not \in I\) for every \(v \in \at{P}\).
+	
+% 	First, we consider an answer set \(I\) of \(P\) and \(I\) satisfies \(\Pi'\).
+% 	We have that \(\negprop\) is evaluated false because \(A\) satisfies \(\Pi'\), thus we can disregard the integrity constraint \(\leftarrow negp\).
+% 	Then \(\Sigma^{A}\) is a positive ASP program because there is no default negation before any \(tmp_i\) atom.
+% 	Hence, \(\Sigma^{A}\) has a unique minimal model, say \(M\).
+% 	Now, we have \((P \cup \Sigma)^{A \cup M} = P^{A \cup M} \cup \Sigma^{A \cup M} = P^A \cup \Sigma^A\) because \(M\) only contains \(tmp_i\) atoms and there is no default negation before any \(tmp_i\) atom.
+% 	\(A\) is a minimal model of \(P^A\), \(M\) is a minimal model of \(\Sigma^A\), and \(P^A\) is independent from \(\Sigma^A\), thus \(A \cup M\) is a minimal model of \((P \cup \Sigma)^{A \cup M}\).
+% 	This implies that \(A \cup M\) is an answer set of \(P \cup \Sigma\) (1). 
+	
+% 	Second, we consider an answer set \(A\) of \(P \cup \Sigma\).
+% 	Clearly, \(A\) satisfies \(\Pi'\) and \(A\) is a minimal model of \((P \cup \Sigma)^A\). 
+% 	Let \(B = A \cap \at{P}\), i.e., \(B\) is the intersection of \(A\) and the set of atoms (\(p_v\), \(n_v\), or \(aux_i\)) appearing in \(P\).
+% 	We have \((P \cup \Sigma)^A = P^A \cup \Sigma^A = P^B \cup \Sigma^A\).
+% 	Since \(P^B\) is independent from \(\Sigma^A\), we can derive that \(B\) is a minimal model of \(P^B\).
+% 	Hence, \(B\) is an answer set of \(P\).
+% 	In addition, since \(\prop\) only contains variables in \(\var{\bn}\), \(B\) also satisfies \(\Pi'\) (2).
+	
+% 	By (1), (2), the equivalence between \(\Pi\) and \(\Pi'\), and the fact that there is a bijection between the set of answer sets of \(P\) and the set of minimal trap spaces of \(\bn\), we can conclude the theorem.
+% \end{proof}
+
+\rcfixcorrectness*
+\begin{proof}
+	% The proof of~\Cref{theo:encoding-correctness-mts} can be applied with \tsconj is replaced with \fasp and minimal trap spaces with fixed points.
+	The proof technique of~\Cref{theo:encoding-correctness-mts} can be similarly extended for fixed point counting with the program $\faspp{f}$.
+\end{proof}
+
+To prove Theorems~\ref{theo:correctness-perturbation-reduction-MTS} and~\ref{theo:correctness-perturbation-reduction-FIX}, we prepare the following preliminaries.
+
+\begin{definition}\label{def:min-t-po}
+	The total order \(\leq_t\) on \(\threed\) is defined by \(0 <_t \star <_t 1\).
+\end{definition}
+
+\begin{definition}\label{def:min-s-po}
+	The partial order \(\leq_s\) on \(\threed\) is defined by \(0 <_s \star\), \(1 <_s \star\), and it contains no other relation.
+\end{definition}
+
+\begin{definition}\label{def:three-valued-evaluation}
+	Consider a BN \(\bn\), a sub-space \(m\) of \(\bn\), and a Boolean expression \(e\) over \(\var{\bn}\).
+	The value of \(e\) under sub-space \(m\) w.r.t. the Kleene three-valued logic, denoted as \(m(e)\), is recursively defined as follows:
+	\begin{align*}
+		m(e) = \begin{cases}
+			e &\text{if } e \in \threed\\
+			m(a) &\text{if } e = a, a \in \var{\bn}\\
+			\neg m(e_1) &\text{if } e = \neg e_1\\
+			\text{min}_{\leq_t}(m(e_1), m(e_2)) &\text{if } e = e_1 \land e_2\\
+			\text{max}_{\leq_t}(m(e_1), m(e_2)) &\text{if } e = e_1 \lor e_2
+		\end{cases}
+	\end{align*} where \(\neg 1 = 0, \neg 0 = 1, \neg \star = \star\), and \(\text{min}_{\leq_t}\) (resp.\ \(\text{max}_{\leq_t}\)) is the function to get the minimum (resp.\ maximum) value of two values w.r.t.\ the order \(\leq_t\).
+\end{definition}
+
+\begin{theorem}[Theorem 1 of~\cite{HAH2015}]\label{theo:trap-space-char}
+	Consider a BN \(f\) and a sub-space \(m\) of \(f\).
+	A sub-space \(m\) is a trap space of \(f\) iff \(m(f_v) \leq_s m(v)\) for every \(v \in \var{f}\).
+\end{theorem}
+
+\begin{corollary}\label{cor:mts-char}
+	Consider a BN \(\bn\) and a sub-space \(m\) of \(\bn\).
+	A sub-space \(m\) is a minimal trap space of \(\bn\) iff \(m\) is a \(\leq_s\)-minimal trap space of \(\bn\).
+\end{corollary}
+
+\begin{corollary}\label{cor:fix-point-char}
+	Consider a BN \(\bn\) and a sub-space \(m\) of \(\bn\).
+	A sub-space \(m\) is a fixed point of \(\bn\) iff \(m\) is a trap space of \(\bn\) and \(m(v) \neq \star\) for every \(v \in \var{\bn}\).
+\end{corollary}
+
+Now, we show the formal proof of Theorem~\ref{theo:correctness-perturbation-reduction-MTS}.
+
+\begin{lemma}\label{lem:transformed-BN-mts-fixed-value}
+	Consider a BN \(f\) and a set of perturbable variables \(\pert \subseteq \var{f}\).
+	Let \(g\) be the BN obtained from \(f\), according to~\Cref{def:BN-perturbation-trans}.
+	Let \(\proj \) be the set \( \bigcup_{v \in \pert}\{v^k, v^o\}\).
+	If \(m\) is a minimal trap space of \(g\), then \(m(v) \neq \star\) for every \(v \in \proj\).
+\end{lemma}
+\begin{proof}
+	Let \(m\) be a minimal trap space of \(g\).
+	Assume that there exists \(v^k \in \proj\) such that \(m(v^k) = \star\) or  \(v^o \in \proj\) such that \(m(v^o) = \star\).
+	We consider two cases as follows.
+	
+	\textbf{Case 1}: \(m(v^k) = \star\).
+	Let \(m'\) be a sub-space of \(g\) such that \(m'(u) = m(u)\), for every \(u \in \var{g} \setminus \{v^k\}\) and \(m'(v^k) = 0\).
+	We have \(m'(g_{v^k}) = m'(v^k)\).
+	The variable \(v^k\) only affects \(v^o\) and \(v\).
+	Regarding \(v^o\), we have \(m'(g_{v^o}) = m'(v^o \land \neg v^k) = \text{min}_{\leq_t}(m'(v^o), \neg m'(v^k)) = \text{min}_{\leq_t}(m'(v^o), 1) = m'(v^o)\).
+	Regarding \(v\), we have \(m'(g_v) = m'(\neg v^k \land (v^o \lor f_v)) = \text{min}_{\leq_t}(\neg m'(v^k), \text{max}_{\leq_t}(m'(v^o), m'(f_v))) = \text{min}_{\leq_t}(1, \text{max}_{\leq_t}(m'(v^o), m'(f_v))) = \text{max}_{\leq_t}(m'(v^o),\allowbreak m'(f_v)) =  \text{max}_{\leq_t}(m(v^o), m(f_v))\).
+	Following~\Cref{theo:trap-space-char}, \(m(g_v) \leq_s m(v)\).
+	We have \(m(g_v) = m(\neg v^k \land (v^o \lor f_v)) = \text{min}_{\leq_t}(\neg m(v^k), \text{max}_{\leq_t}\allowbreak(m(v^o), m(f_v))) = \text{min}_{\leq_t}(\star, \text{max}_{\leq_t}(m(v^o), m(f_v)))\).
+	Since \(m(v) <_s \text{max}_{\leq_t}(m(v^o), m(f_v))\) implies \(m(v) <_s m(g_v)\) which is a contradiction, we derive that \(\text{max}_{\leq_t}(m(v^o), m(f_v)) \leq_s m(v)\).
+	This implies \(m'(g_v) \leq_s m(v) = m'(v)\).
+	For any \(u \in \var{g} \setminus \{v, v^k, v^o\}\), \(m'(g_u) = m(g_u) \leq_s m(u) = m'(u)\).
+	Hence, \(m'\) is trap space of \(g\) and \(m' <_s m\), which is a contradiction.
+	
+	\textbf{Case 2}: \(m(v^o) = \star\).
+	Let \(m'\) be a sub-space of \(g\) such that \(m'(u) = m(u)\) for every \(u \in \var{g} \setminus \{v^o\}\) and \(m'(v^o) = 0\).
+	We have \(m'(g_{v^o}) = m'(v^o \land \neg v^k) = \text{min}_{\leq_t}(m'(v^o), \neg m'(v^k)) = \text{min}_{\leq_t}(0, \neg m'(v^k)) = 0 = m'(v^o)\).
+	The variable \(v^o\) only affects \(v\).
+	We have \(m'(g_v) = m'(\neg v^k \land (v^o \lor f_v)) = \text{min}_{\leq_t}(\neg m'(v^k), \text{max}_{\leq_t}(m'(v^o), m'(f_v))) = \text{min}_{\leq_t}(\neg m'(v^k), \text{max}_{\leq_t}(0, m'(f_v))) = \text{min}_{\leq_t}(\neg m'(v^k), m'(f_v)) = \text{min}_{\leq_t}(\neg m(v^k), m(f_v))\).
+	Following~\Cref{theo:trap-space-char}, \(m(g_v) \leq_s m(v)\).
+	We have \(m(g_v) = m(\neg v^k \land (v^o \lor f_v)) = \text{min}_{\leq_t}(\neg m(v^k), \text{max}_{\leq_t}(m(v^o), m(f_v))) = \text{min}_{\leq_t}(\neg m(v^k),\allowbreak \text{max}_{\leq_t}(\star, m(f_v)))\).
+	Suppose that \(m'(v) = m(v) <_s \text{min}_{\leq_t}(\neg m(v^k), m(f_v))\).
+	If \(m(f_v) = 0\), then \(m(v) <_s 0\) which contradicts to the definition of \(\leq_s\).
+	Hence \(m(f_v) \neq 0\), leading to \(\text{max}_{\leq_t}(\star, m(f_v)) = m(f_v)\).
+	Then \(m(v) <_s \text{min}_{\leq_t}(\neg m(v^k), m(f_v)) = m(g_v)\), which is a contradiction.
+	Hence, \(\text{min}_{\leq_t}(\neg m(v^k), m(f_v)) \leq_s m'(v)\).
+	This implies that \(m'(g_v) \leq_s m'(v)\).
+	For any \(u \in \var{g} \setminus \{v, v^o\}\), \(m'(g_u) = m(g_u) \leq_s m(u) = m'(u)\).
+	Hence, \(m'\) is trap space of \(g\) and \(m' <_s m\), which is a contradiction.
+	
+	Combining Case $1$ and Case $2$, we can conclude that for \(m(v) \neq \star\) for every \(v \in \proj\).
+\end{proof}
+
+\begin{lemma}\label{lem:trap-space-projection}
+	Consider a BN \(f\) and a set of perturbable variables \(\pert \subseteq \var{f}\).
+	Let \(g\) be the BN obtained from \(f\), according to~\Cref{def:BN-perturbation-trans} and \(\proj\) be the set \(\bigcup_{v \in \pert}\{v^k, v^o\}\).
+	Let \(m\) be a trap space of \(g\) such that \(m(v) \neq \star\) for every \(v \in \proj\).
+	Let \(\perm\) be the perturbation of \(f\) such that \(\perm(v) = 1\) if and only if \(m(v^k) = 0\) and \(m(v^o) = 1\), \(\perm(v) = 0\) if and only if \(m(v^k) = 1\) and \(m(v^o) = 0\), and \(\perm(v) = \star\) if and only if \(m(v^k) = 0\) and \(m(v^o) = 0\).
+	Then \(m'\) is a trap space of \(f^{\perm}\) where \(m'(v) = m(v)\) for every \(v \in \var{f}\).
+\end{lemma}
+\begin{proof}
+	Assume that there exists \(v \in \pert\) such that \(m(v^k) = m(v^o) = 1\).
+	Since \(m\) is a trap space of \(g\), \(m(g_{v^o}) \leq_s m(v^o)\).
+	We have \(m(g_{v^o}) = m(v^o \land \neg v^k) = 0\), whereas \(m(v^o) = 1\), leading to \(0 \leq_s 1\), which contradicts to the definition of \(\leq_s\).
+	Hence, the case of \(m(v^k) = m(v^o) = 1\) is impossible for every \(v \in \pert\).
+	Since \(m(v) \neq \star\) for every \(v \in \proj\), \(\perm\) is well specified.
+	
+	Recall that \(\var{g} = \var{f} \cup \proj\) and \(\var{f} = \var{f^{\perm}}\).
+	Consider \(v \in \var{f^{\perm}}\).
+	If \(v \not \in \pert\), we have \(m'(f^{\perm}_v) = m'(f_v) = m'(g_v) = m(g_v) \leq_s m(v) = m'(v)\).
+	If \(v \in \pert\), we have the following cases:
+	
+	\textbf{Case 1}: \(m(v^k) = 0\) and \(m(v^o) = 0\).
+	Then \(\perm(v) = \star\), thus \(m'(f^{\perm}_v) = m'(f_v)\).
+	We have \(m(g_v) = m(\neg v^k \land (v^o \lor f_v)) = m(f_v) \leq_s m(v) = m'(v)\).
+	Since \(m'(f_v) = m(f_v)\), it follows that \(m'(f^{\perm}_v) \leq_s m'(v)\).
+	
+	\textbf{Case 2}: \(m(v^k) = 1\) and \(m(v^o) = 0\).
+	Then \(\perm(v) = 0\), thus \(m'(f^{\perm}_v) = 0\).
+	We have \(m(g_v) = m(\neg v^k \land (v^o \lor f_v)) = 0 \leq_s m(v) = m'(v)\).
+	Hence, \(m'(f^{\perm}_v) \leq_s m'(v)\).
+	
+	\textbf{Case 3}: \(m(v^k) = 0\) and \(m(v^o) = 1\).
+	Then \(\perm(v) = 1\), thus \(m'(f^{\perm}_v) = 1\).
+	We have \(m(g_v) = m(\neg v^k \land (v^o \lor f_v)) = 1 \leq_s m(v) = m'(v)\).
+	Hence, \(m'(f^{\perm}_v) \leq_s m'(v)\).
+	
+	Now we can conclude that \(m'(f^{\perm}_v) \leq_s m'(v)\) for every \(v \in \var{f^{\perm}}\).
+	Hence, \(m'\) is a trap space of \(f^{\perm}\).
+\end{proof}
+
+\correctnessperturbationreductionMTS*
+\begin{proof}
+	First, we consider a perturbation \(\perm \colon \pert \to \threed\) of BN \(f\).
+	Let \(m_{\proj} \colon \proj \to \twod\) be a mapping such that for every \(v \in \pert\), \(\perm(v) = 1\) if and only if \(m_{\proj}(v^k) = 0\) and \(m_{\proj}(v^o) = 1\), \(\perm(v) = 0\) if and only if \(m_{\proj}(v^k) = 1\) and \(m_{\proj}(v^o) = 0\), and \(\perm(v) = \star\) if and only if \(m_{\proj}(v^k) = 0\) and \(m_{\proj}(v^o) = 0\).
+	Recall that \(\var{g} = \var{f} \cup \proj\) and \(\var{f} = \var{f^{\perm}}\).
+	Let \(m\) be a minimal trap space of \(f^{\perm}\) and \(m \models \phen\).
+	Let \(m'\) be a sub-space of \(g\) such that \(m'(v) = m(v)\) if \(v \in \var{f}\) and \(m'(v) = m_{\proj}(v)\) if \(v \in \proj\).
+	We show that \(m'\) is a minimal trap space of \(g\) and \(m' \models \phen\) (1).
+	
+	Consider \(v \in \pert\),
+	we have \(m'(g_{v^k}) = m'(v^k)\).
+	If \(m'(v^k) = 0\), then \(m'(v^o \land \neg v^k) = m'(v^o)\).
+	If \(m'(v^k) = 1\), then \(m'(v^o) = 0\) due to the definition of \(m_{\proj}\), leading to \(m'(v^o \land \neg v^k) = 0 = m'(v^o)\).
+	Hence, we can derive that \(m'(g_{v^o}) = m'(v^o \land \neg v^k) = m'(v^o)\).
+	Regarding \(m'(g_v) = m'(\neg v^k \land (v^o \lor f_v))\), we have the following cases:
+	
+	\textbf{Case 1}: \(\perm(v) = \star\).
+	Then \(m'(v^k) = 0\) and \(m'(v^o) = 0\).
+	We have \(m'(g_v) = m'(f_v) = m(f_v) = m(f^{\perm}_v) \leq_s m(v) = m'(v)\).
+
+	\textbf{Case 2}: \(\perm(v) = 1\).
+	Then \(m'(v^k) = 0\) and \(m'(v^o) = 1\).
+	We have \(m'(g_v) = 1 = m(f^{\perm}_v) \leq_s m(v) = m'(v)\).
+
+	\textbf{Case 3}: \(\perm(v) = 0\).
+	Then \(m'(v^k) = 1\) and \(m'(v^o) = 0\).
+	We have \(m'(g_v) = 0 = m(f^{\perm}_v) \leq_s m(v) = m'(v)\).
+	Consider \(v \in \var{f} \setminus \pert\).
+	We have \(m'(g_v) = m'(f_v) = m(f_v) = m(f^{\perm}_v) \leq_s m(v) = m'(v)\).
+	
+	Now, we can conclude that \(m'\) is a trap space of \(g\).
+	Assume that \(m'\) is not minimal.
+	Then there is a trap space \(n\) of \(g\) such that \(n <_s m'\).
+	Since \(m'(v) \neq \star\) for every \(v \in \proj\), \(n(v) = m'(v)\) for every \(v \in \proj\), leading to \(n(v) \neq \star\) for every \(v \in \proj\).
+	Following the~\Cref{lem:trap-space-projection}, \(n'\) is a trap space of \(f^{\perm}\) where \(n'(v) = n(v)\) for every \(v \in \var{f}\).
+	Since \(n(v) = m'(v)\) for every \(v \in \proj\), we have \(n' <_s m\), which contradicts to the \(\leq_s\)-minimality of \(m\) w.r.t. \(f^{\perm}\).
+	Hence, \(m'\) is a minimal trap space of \(g\).
+	In addition, since \(\phen\) only contains the variables in \(\var{f}\), it is trivial that \(m' \models \phen\).
+	
+	Second, we consider a minimal trap space \(m\) of \(g\) such that \(m \models \phen\).
+	By~\Cref{lem:transformed-BN-mts-fixed-value}, \(m(v) \neq \star\) for every \(v \in \proj\).
+	The case of \(m(v^k) = m(v^o) = 1\) is impossible because if it holds, then \(m(g_{v^o}) = m(v^o \land \neg v^k) = 0 \leq_s m(v^o) = 1\), which is a contradiction.
+	Let \(\perm\) be the perturbation of \(f\) such that \(\perm(v) = 1\) if and only if \(m(v^k) = 0\) and \(m(v^o) = 1\), \(\perm(v) = 0\) if and only if \(m(v^k) = 1\) and \(m(v^o) = 0\), and \(\perm(v) = \star\) if and only if \(m(v^k) = 0\) and \(m(v^o) = 0\).
+	Let \(m'\) be a sub-space of \(f\) such that \(m'(v) = m(v)\) for every \(v \in \var{f}\).
+	We show that \(m'\) is a minimal trap space of \(f^{\perm}\) and \(m' \models \phen\) (2).
+	
+	By Lemma~\ref{lem:trap-space-projection}, \(m'\) is a trap space of \(f^{\perm}\).
+	Assume that \(m'\) is not minimal.
+	Then there is a minimal trap space \(n\) of \(f^{\perm}\) such that \(n <_s m'\).
+	Let \(n'\) be a sub-space of \(g\) such that \(n'(v) = m(v)\) for every \(v \in \proj\) and \(n'(v) = n(v)\) for every \(v \in \var{f}\).
+	By following the same reasoning for (1), we have \(n'\) is a trap space of \(g\).
+	However, \(n' <_s m\), which contradicts to the \(\leq_s\)-minimality of \(m\) w.r.t. \(g\).
+	Hence, \(m'\) is a minimal trap space of \(f^{\perm}\).
+	In addition, since \(\phen\) only contains the variables in \(\var{f}\), it is trivial that \(m' \models \phen\).
+	
+	From (1) and (2), we can conclude that, given  $f, \pert$, and $\phen$, the result of the counting problem \(\acthirdmts{}\) is equivalent to the number of minimal trap spaces of \(g\) that satisfy \(\phen\) where multiple minimal trap spaces with the same values on the variables in \(\proj\) are only counted once.
+	By~\Cref{theo:encoding-correctness-mts}, the answer sets of \(\tsconjp{g} \cup \toaspalgname{\phen}\) one-to-one correspond to the minimal trap spaces of \(g\) satisfying \(\phen\).
+	The set \(\aproj\) includes the atoms of \(\tsconjp{g} \cup \toaspalgname{\phen}\) corresponding to the variables in \(\proj\) of \(g\).
+	It follows that the number of answer sets of \(\tsconjp{g} \cup \toaspalgname{\phen}\) projected to \(\aproj\) is equal to the number of minimal trap spaces of \(g\) satisfying \(\phen\) projected to \(\proj\).
+	This implies that \(\acthirdmts{}\) can be computed as the projected answer set counting query \(\projaspcount{\tsconjp{g} \cup \toaspalgname{\phen}, \aproj}\).
+\end{proof}
+
+Finally, we show the formal proof of~\Cref{theo:correctness-perturbation-reduction-FIX}.
+
+\correctnessperturbationreductionFIX*
+\begin{proof}
+	%This immediately follows from~\Cref{theo:correctness-perturbation-reduction-MTS} and the fact that a fixed point is also a special minimal trap space where all variables are fixed.
+	The proof technique of~\Cref{theo:correctness-perturbation-reduction-MTS} can be similarly extended for \acthirdfix{} with the program $\faspp{g}$.
+\end{proof}

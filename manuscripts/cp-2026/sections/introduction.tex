@@ -1,0 +1,39 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Boolean Networks (BNs) serve as a fundamental modeling framework for representing complex dynamical systems across domains such as systems biology, computational logic, and artificial intelligence~\cite{DWM2024,HMJ2024,Rozum2021,SKIKK2020,TBSF2024}.
+Their ability to capture intricate interactions and complex system behaviors makes them a valuable tool for studying diverse phenomena such as gene regulatory networks, logical circuits, and reasoning processes~\cite{ASDO2024,Rozum2021}.
+A crucial aspect of BN dynamics is the existence of trap spaces—subspaces of the state space that, once entered, cannot be exited~\cite{HAH2015}.
+These structures are instrumental in understanding the long-term behavior of BNs, as they often correspond to stable system configurations or attractors~\cite{HAH2015}.
+
+Among trap spaces, minimal trap spaces (fixed points are a special case of minimal trap spaces in which all variables are {\em fixed}~\cite{HAH2015}) are of particular interest due to their role in characterizing the dynamical landscape of a BN~\cite{HAH2015,TPPR2024}.
+The identification and counting of minimal trap spaces provide valuable insights into the system stability, attractor structure, and probabilistic behavior~\cite{HAH2015,CS2015}.
+However, enumerating these structures poses a significant challenge due to their computational complexity, especially for large-scale BNs encountered in practical applications~\cite{TBPS2024}.
+Scalable methods for counting minimal trap spaces are therefore essential for advancing the BN analysis.
+
+Unfortunately, minimal trap spaces have received little attention in the context of counting problems for Boolean networks.
+In contrast, the problem of counting fixed points has been studied in several works~\cite{PG2005,Predrag2006,CS2015,FAKA2022}.
+These works show that fixed point counting is generally \#P-complete and examine its complexity under structural restrictions~\cite{PG2005,Predrag2006} or specific classes of Boolean update functions~\cite{CS2015}.
+Some studies also consider scenarios in which the update logic is only partially known~\cite{FAKA2022}.
+On the practical side, while no dedicated implementation exists for fixed point counting, the task can be reduced to propositional model counting~\cite{SRSM19} via a CNF encoding of fixed points~\cite{EM2011}.
+To the best of our knowledge, no prior work---either theoretical or practical---has addressed the problem of counting minimal trap spaces in Boolean networks.
+
+Our paper addresses the research gap by formulating six meaningful problems related to counting minimal trap spaces and fixed points in BNs.
+These counting problems capture core tasks such as counting all minimal trap spaces or fixed points, counting those that satisfy a given {\em property} (e.g., a {\em phenotype}), and counting solutions under {\em perturbations}.
+These problems provide valuable insights not only within BN theory (e.g., probabilistic reasoning and dynamical analysis) but also in broader application areas such as abstract argumentation and logic programming (discussed in~\Cref{sec:problem-formulation}).
+We subsequently propose novel and efficient methods to solve the counting problems by exploiting the expressive power of Answer Set Programming (ASP)~\cite{MT1999}.
+% Additionally, we provide practical implementation of counting minimal trap spaces.
+ASP is a declarative problem solving paradigm and has widely been applied in the field of systems biology~\cite{ST2009,VGETGNSSS2015}, in particular in the analysis and control of BNs~\cite{AFRM2017,KSSV2013,HAH2015,Paulev2020,TBPS2024,TBS2023} (see~\Cref{sec:related-work}).
+As in existing ASP counting literature~\cite{KM2023}, our ASP-based reduction leverages the approximate answer set counter ApproxASP~\cite{KESHFM22}, which employs a {\em hashing-based} technique for approximate answer set counting.
+Finally, we conduct an extensive experimental evaluation on a diverse benchmark dataset.
+% , comparing our approach with existing systems for computing and analyzing minimal trap spaces or fixed points.
+Our analysis shows that ApproxASP efficiently estimates the number of minimal trap spaces and fixed points, and ApproxMC~\cite{YM2023} efficiently estimates fixed point counts. 
+Both approaches avoid exhaustive enumeration, significantly improving the feasibility of counting compared to enumeration and BDD-based methods used in other tools.
+
+The remainder of the paper is structured as follows. 
+In~\Cref{sec:preliminaries}, we review the necessary background on propositional logic, BNs, answer set programming, and model counting.
+\Cref{sec:related-work} surveys related work.
+\Cref{sec:problem-formulation} defines the six counting problems we consider and discusses their applications.
+\Cref{sec:computation-methods} introduces our ASP-based reduction methods for solving these problems. 
+\Cref{sec:experimental-results} presents experimental results, demonstrating the effectiveness of our methods. 
+Finally, \Cref{sec:conclusion} concludes the paper and outlines potential directions for future research.

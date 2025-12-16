@@ -1,0 +1,10 @@
+\section{Details of Benchmark Instances}\label{sec:detailed-benchmark-inputs}
+
+Our benchmarks are based on the $245$ real-world biological models from the BBM dataset~\cite{pastva2023repository} available at the time of writing, plus 400 random Boolean networks that were first tested as part of~\cite{TBPS2024}. The real-world Boolean models range up to 1076 variables, out of which up to 223 are source variables. However, the median network size in this dataset is less than 100 variables. As such, we also consider larger, random Boolean networks ranging between 1,000 and 5,000 variables. 
+All source variables across all networks are left unrestricted, meaning they can take the value 0 or 1, thereby maximizing the number of admissible trap spaces.
+
+These 645 instances are used directly as inputs for benchmarking the \acfirstfix{} and \acfirstmts{} problems. To test \acsecondfix{} and \acsecondmts{}, we augment each network with a pseudo-random phenotype specification. Here, the specification is chosen as follows: we first compute an arbitrary, fixed minimal trap space using \tsconj. We then randomly select the values of three fixed variables --- excluding all the source variables of the network. 
+The conjunction of these values represents the tested phenotype.
+This process ensures that for each Boolean network, problem \acsecondmts{} always has at least one valid minimal trap space solution (existence of a fixed point solution cannot be guaranteed regardless of the chosen phenotype).
+
+Finally, to evaluate \acthirdfix{} and \acthirdmts{}, we use the same phenotype but also pseudo-randomly select up to 50 perturbable variables, excluding both the source variables and those fixed by the phenotype. For networks with less than 50 such candidates, we simply select all viable variables as perturbable. We then use the transformation proposed in~\Cref{def:BN-perturbation-trans} to construct a new variant of each benchmark network in which the selected variables can be perturbed. Each such perturbed network, together with the phenotype, represents the input for \acthirdfix{} and \acthirdmts{}.
