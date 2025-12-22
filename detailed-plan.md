@@ -64,7 +64,7 @@ Notes:
 
 All three fixed-point counting problems formulated in CP'25: C-FIX-1, C-FIX-2, C-FIX-3
 
-> Some SAT encodings do not directly support C-FIX-2 and C-FIX-3, thus we need some slight adaptions.
+> Some SAT encodings do not directly support C-FIX-2 and C-FIX-3, thus we need some slight adaptions. [Son]
 
 ### Dataset Construction
 
@@ -72,11 +72,13 @@ Three separate datasets:
 
 + Real-world BNs
 + Synthetic BNs
-+ ADFs
++ ADFs: find harder models [Van-Giang, Sam]
 
 > BN models are taken from the benchmarks of CP'25 and IJCAI'25.
 
 > ADF models taken from the benchmarks of FM'26 (submitted, focusing on ADFs).
+
+> Can apply the method of npj paper on phenotype-determining nodes to get a meaningful set of phenotype nodes [Sam]
 
 ### Methods Evaluated
 
@@ -88,6 +90,8 @@ ASP encodings $\times$ SAT encodings $\times$ \{exact counting, approximate coun
 
 > Can overlook inferior ASP encodings (e.g., pyboolnet, mpbn, trapmvn, an-asp)
 
+Improvement, analogous to hybrid encoding in IJCAI'25 [Sam, Van-Giang]
+
 **SAT encodings:**
 
 - Three CNF encodings (from IJCAI'25)
@@ -98,6 +102,12 @@ ASP encodings $\times$ SAT encodings $\times$ \{exact counting, approximate coun
 \{Stripping output nodes, Propagating fixed nodes, Suppressing non-autoregulated nodes\} $\times$ \{syntactical construction, BDD-based construction\}
 
 > For the suppressing non-autoregulated nodes reduction, we should consider multiple stop criteria similar to those investigated in ``Phenotype control and elimination of variables in Boolean networks'' <https://doi.org/10.24072/pcjournal.452>.
+
+> [Sam] guide Son to run AEON's BDD-based reduction
+
+> Optimize the reduction workflow, threshold setting [Sam]
+
+> [Van-Giang] stop criteria may be related to treewidth
 
 ### Evaluation Criteria
 
@@ -121,10 +131,10 @@ KR 2026 <https://kr.org/KR2026/>:
 - KR in the Wild track (mid February, 2026) ---> full paper (focus on implementation, datasets, reproducible empirical findings)
 - Main track (February 13, 2026) ---> short paper
  
- CP 2026 (best fit) <https://cp2026.a4cp.org/>:
+CP 2026 (best fit) <https://cp2026.a4cp.org/>:
  
- - Short paper (March 07, 2026)
- - Full paper (March 07, 2026)
+- Short paper (March 07, 2026)
+- Full paper (March 07, 2026)
 
 > Van-Giang: I think if we can manipulate all stuff mentioned above, it is potentially possible to submit a full paper.
 
