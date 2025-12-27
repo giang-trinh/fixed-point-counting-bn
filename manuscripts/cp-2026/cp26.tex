@@ -29,11 +29,9 @@
 \input{sections/macro.tex}
 \bibliographystyle{plainurl}% the mandatory bibstyle
 
-\title{Scalable Counting of Minimal Trap Spaces and Fixed Points in Boolean Networks} %TODO Please add
+\title{Counting Fixed Points in Boolean Networks: ASP, SAT, and Network Reductions} %TODO Please add
 
 %%% Some options for the title
-% Efficient Approximate Counting of Minimal Trap Spaces in Boolean Networks
-% Counting Minimal Trap Spaces in Boolean Networks: Formulation, Computation, and Application
 
 %\titlerunning{} %TODO optional, please use if title is longer than one line
 
@@ -53,7 +51,7 @@
 \ccsdesc[500]{Computing methodologies~Logic programming and answer set programming}
 \ccsdesc[100]{Applied computing~Systems biology}
 
-\keywords{Computational systems biology, Boolean network, Fixed point, Trap space, Answer set counting, Projected counting, Abstract argumentation, Logic programming} %TODO mandatory; please add comma-separated list of keywords
+\keywords{Computational systems biology, Boolean network, Fixed point, Trap space, Answer set counting, Projected counting, Abstract argumentation, SAT counting} %TODO mandatory; please add comma-separated list of keywords
 
 \category{Regular Paper} %optional, e.g. invited paper
 
@@ -96,15 +94,16 @@
 
 %TODO mandatory: add short abstract of the document
 \begin{abstract}
-	Boolean Networks (BNs) serve as a fundamental modeling framework for capturing complex dynamical systems across various domains, including systems biology, computational logic, and artificial intelligence. 
-	A crucial property of BNs is the presence of trap spaces --- subspaces of the state space that, once entered, cannot be exited. 
-	Minimal trap spaces, in particular, play a significant role in analyzing the long-term behavior of BNs, making their efficient enumeration and counting essential.
-	The fixed points in BNs are a special case of minimal trap spaces.
-	In this work, we formulate several meaningful counting problems related to minimal trap spaces and fixed points in BNs.
-	These problems provide valuable insights both within BN theory (e.g., in probabilistic reasoning and dynamical analysis) and in broader application areas, including systems biology, abstract argumentation, and logic programming. 
-	To address these computational challenges, we propose novel methods based on {\em approximate answer set counting}, leveraging techniques from answer set programming.
-	Our approach efficiently approximates the number of minimal trap spaces and the number of fixed points without requiring exhaustive enumeration, making it particularly well-suited for large-scale BNs.
-	Our experimental evaluation on an extensive and diverse set of benchmark instances shows that our methods significantly improve the feasibility of counting minimal trap spaces and fixed points, paving the way for new applications in BN analysis and beyond.
+	Boolean Networks (BNs) are widely used to model complex dynamical systems in biology, logic, and AI, where fixed points (a.k.a. singleton attractors) represent stable long-term states.
+	Counting the number of fixed points in a BN is a \#P-complete problem with applications ranging from analyzing gene regulatory stability to reasoning in argumentation systems.
+	Recently, two distinct approaches have emerged for fixed-point counting: an Answer Set Programming (ASP) based approximate counting method and a SAT-based exact counting method.
+	However, their relative performance and trade-offs remain poorly understood. Moreover, various BN reduction techniques promise to shrink networks while preserving all fixed points, yet their impact on counting efficiency has not been systematically studied.
+	Beyond BNs, there is an opportunity to apply BN fixed-point counting to Abstract Dialectical Frameworks (ADFs), since each two-valued model of an ADF corresponds to a BN fixed point, but no dedicated ADF model-counting methods exist.
+	In this paper, we address these gaps by conducting a comprehensive empirical study of modern fixed-point counting methods and proposing an integrated workflow combining ASP vs. SAT solving paradigms with network reductions.
+	We evaluate exact and approximate counting on diverse real-world and synthetic BNs, as well as translated ADF instances, to answer: (RQ1) How do ASP and SAT methods compare in scalability, memory, and accuracy for counting fixed points? (RQ2) How do network reduction strategies influence counting performance for different methods and instances? (RQ3) How can BN counting techniques be applied to ADFs, and what insights do they yield?
+	Our results provide the first head-to-head comparison of ASP- and SAT-based counting, revealing their respective strengths and show that appropriate reductions can speed up counting by orders of magnitude in many cases.
+	Furthermore, we demonstrate the viability of counting two-valued ADF interpretations via BN encodings, opening new avenues for quantitative reasoning in argumentation.
+	These contributions advance the theory and practice of fixed-point counting, with implications for both computational biology and knowledge representation.
 \end{abstract}
 
 
