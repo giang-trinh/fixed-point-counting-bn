@@ -96,6 +96,7 @@ Improvement, analogous to hybrid encoding in IJCAI'25 [Sam, Van-Giang]
 
 - Three CNF encodings (from IJCAI'25)
 - Native CNF encoding (from TCBB'11 (A SAT-based algorithm for finding attractors in synchronous Boolean networks <https://doi.org/10.1109/TCBB.2010.20>) and IJCAI'11 (Logic programming for boolean networks) <https://www.ijcai.org/Proceedings/11/Papers/160.pdf>)
+- SAF (from SAF: SAT-based attractor finder in asynchronous automata networks <https://doi.org/10.1007/978-3-031-42697-1_12>)
 
 ### Network Reductions to Evaluate
 
