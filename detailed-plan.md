@@ -1,4 +1,4 @@
-﻿# Counting Fixed Points in Boolean Networks: ASP vs. SAT
+﻿# Counting Fixed Points in Boolean Networks: ASP, SAT, and Network Reductions
 
 ## Goal
 
