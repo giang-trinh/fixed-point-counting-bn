@@ -1,278 +1,77 @@
-\section{Experimental Evaluation}\label{sec:experimental-results}
+\section{Results and Discussion}\label{sec:results-discussion}
 
-This section presents the experimental evaluation of the presented methods.
-We use existing minimal trap space and fixed point computation tools as baselines---namely, AEON~\cite{BKPS2020}, k++ADF (ADF)~\cite{LMNWW22}, and clingo~\cite{GKKOSS2011}.
-The ADF tool is applicable here due to the equivalence between ADFs and BNs~\cite{ASDO2024,HMJ2024}, which supports only \acfirstmts{} and \acfirstfix{}.
-k++ADF and Clingo count minimal trap spaces and fixed points via enumeration on the ADF and the encoded ASP respectively, and AEON via BDD-based encoding.
-For the fixed point problem variants, we further considered the propositional model counter~\cite{SRSM19} (GANAK) and the approximate model counter~\cite{YM2023} (ApproxMC), using the translation to CNF (see~\Cref{sec:related-work}).
-However, note that these techniques cannot be directly used for minimal trap space counting. 
-For approximate answer set counting, we employed the hashing-based approximate answer set counter ApproxASP~\cite{KESHFM22} with parameters $\varepsilon = 0.8$ and $\delta = 0.2$.
-Following prior work on counting~\cite{KM2024}, we provided ApproxASP with an independent support of a disjunctive ASP program exploiting Padoa theorem~\cite{Padoa1901}.
-We also tested the tree decomposition-based answer set counter DynASP~\cite{FHMW2017}; however, we did not include it in the final analysis because it has been significantly outperformed by the remaining baselines.
-Finally, note that we could not include \#SAT-based ASP counters aspmc~\cite{EHK2024} and sharpASP~\cite{KCM2024} as baselines, since these counters are designed for normal logic programs, while \tsconj~and \fasp~encodings produce disjunctive ASP programs.
+\subsection{RQ1: ASP vs. SAT -- Performance Comparison}
 
-We compiled our benchmark set from prior studies on minimal trap spaces and fixed points in BNs~\cite{pastva2023repository,TBPS2024,TBS2023}. The set comprises $645$ BN instances---$245$ real-world models and $400$ randomly generated---with up to $5,\!000$ variables. To evaluate counting problems \acsecondmts{}, \acsecondfix{}, \acthirdmts{}, and \acthirdfix{}, we pseudo-randomly fixed three variables to represent the target phenotype and selected up to $50$ perturbable variables (yielding as many as $3^{50}$ possible perturbations).
-Phenotypes are typically not published in machine-readable format, thus we maintain biological interpretability by deriving the phenotype from a known trap space, linking it to an existing biological feature of the network.
-As for the chosen size, only a few variables are sufficient to identify phenotypes: e.g., in~\cite{Fischer2021}, only 10-200 entities are needed out of ~10,000. 
-Since our tests are often significantly smaller, we scaled down the phenotypes accordingly.
-Appendix~\ref{sec:detailed-benchmark-inputs} provides further details about the benchmark.
-The code and dataset of experiment evaluation is available at: \url{https://zenodo.org/records/15141045}
+Test
 
-\textbf{Environmental Settings.} All experiments were conducted on a high-performance computing cluster, with each node consisting of Intel Xeon Gold $6248$ CPUs. 
-Each benchmark instance was allocated one core, with runtime and memory limits set to $5000$ seconds and $8$ GB respectively, for all the tools considered.
+\paragraph{Overall Performance:}
 
-\subsection{Experimental Results}
+Test
 
+\paragraph{Exact vs. Approximate:}
 
-\textbf{\acfirstmts{} and \acfirstfix{}} The results for \acfirstmts{} and \acfirstfix{} are shown in~\Cref{table:c_mts_1_result} and~\Cref{table:c_fix_1_result}, respectively.
-Each table reports the number of instances solved (i.e., instances for which a count was successfully returned) by each tool and their corresponding PAR$2$ scores~\cite{SAT2017} (PAR$2$ score is a runtime metric that also penalizes benchmark timeouts). 
-Here, approximate counting (ApproxASP and ApproxMC) clearly outperform all existing solutions. 
-Even compared to exact model counting (GANAK), this approach achieves significantly better performance. 
-Note that for \acfirstfix{}, ApproxASP and ApproxMC are roughly comparable, but (as discussed in detail later), ApproxASP is faster on simpler instances.
-%This is to be expected, as the fixed point problem encoding is similar between CNF and ASP.
+Test
 
-% The table shows the number of solved instances by each tool and their corresponding PAR$2$ scores. 
-% These findings demonstrate that both ApproxASP and ApproxMC outperform existing systems for counting minimal trap spaces and fixed points. 
-% Like as \acfirstmts{}, ApproxASP outperforms existing systems for counting fixed points. 
+\paragraph{Memory Usage:}
 
-It is worth noting that unsafe formulas are quite rare in 245 real-world models, which is consistent with the observation in~\cite{TBPS2024}.
-All 400 randomly generated models have no unsafe formulas because of the nature of the generation~\cite{TBPS2024}.
+Test
 
-\begin{table}[h]
-    \centering
-    \begin{tabular}{m{4em} m{4em} m{4em} m{4em} m{5em}} 
-    \toprule
-    % & & \rotatebox{60}{\clingo} & \rotatebox{60}{DynASP} & \rotatebox{60}{Ganak}  & \rotatebox{60}{ApproxMC} & \rotatebox{60}{ApproxASP} \\ 
-    & AEON & ADF & clingo & ApproxASP\\
-    \midrule
-    \#Solved & 179 & 200 & 211 & \textbf{364}\\
-    \midrule
-    PAR$2$ & 7255 & 6923 & 6742 & \textbf{4448}\\
-    \bottomrule
-    \end{tabular}
-    \caption{The performance comparison of different counters on \acfirstmts{} counting problem.}
-    \label{table:c_mts_1_result}
-\end{table}
-\begin{table}[h]
-    \centering
-    \begin{tabular}{m{4em} m{3em} m{3em} m{3em} m{4em} m{5em} m{5em}} 
-    \toprule
-    % & & \rotatebox{60}{\clingo} & \rotatebox{60}{DynASP} & \rotatebox{60}{Ganak}  & \rotatebox{60}{ApproxMC} & \rotatebox{60}{ApproxASP} \\ 
-    & AEON & ADF & clingo & GANAK & ApproxMC & ApproxASP \\
-    \midrule
-    \#Solved & 247 & 217 & 227 & 317 & \textbf{420} & 413\\
-    \midrule
-    PAR$2$ & 6172 & 6656 & 6493 & 5269 & 3801 & \textbf{3760}\\
-    \bottomrule
-    \end{tabular}
-    \caption{The performance comparison of different counters on \acfirstfix{} counting problem.}
-    \label{table:c_fix_1_result}
-\end{table}
+\paragraph{Scalability Limits:}
 
-\begin{figure*}
-    \centering
-    \begin{subfigure}[t]{0.32\textwidth}
-        \centering
-        % include first image
-        \includegraphics[width=0.99\linewidth]{images/cmts1-runtime.pdf}
-        \caption{\acfirstmts{}}
-        \label{fig:count_mts_1}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.32\textwidth}
-        \centering
-        % include first image
-        \includegraphics[width=0.99\linewidth]{images/cmts2-runtime.pdf}
-        \caption{\acsecondmts{}}
-        \label{fig:count_mts_2}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.32\textwidth}
-        \centering
-        % include first image
-        \includegraphics[width=0.99\linewidth]{images/cmts3-runtime.pdf}
-        \caption{\acthirdmts{}}
-        \label{fig:cactus_plots}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.32\textwidth}
-        \centering
-        % include first image
-        \includegraphics[width=0.99\linewidth]{images/cfix1-runtime.pdf}
-        \caption{\acfirstfix{}}
-        \label{fig:count_fix_1}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.32\textwidth}
-        \centering
-        % include first image
-        \includegraphics[width=0.99\linewidth]{images/cfix2-runtime.pdf}
-        \caption{\acsecondfix{}}
-        \label{fig:count_fix_2}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.32\textwidth}
-        \centering
-        % include first image
-        \includegraphics[width=0.99\linewidth]{images/cfix3-runtime.pdf}
-        \caption{\acthirdfix{}}
-        \label{fig:count_fix_3}
-    \end{subfigure}
-    
-    \caption{Performance comparison of different counters across all counting problems. The $x$ axis shows the number of benchmarks completed before the corresponding CPU runtime on the $y$ axis.}
-    \label{fig:counting_task_1}
-\end{figure*}
+Test
 
-\noindent\textbf{\acsecondmts{} and \acsecondfix{}} The results for \acsecondmts{} and \acsecondfix{} are shown in~\Cref{table:c_mts_2_result} and~\Cref{table:c_fix_2_result}, respectively, using the same metric (solved instances and PAR$2$ score) as~\Cref{table:c_mts_1_result} and~\Cref{table:c_fix_1_result}.
-Here, the relative performance of individual tools mirrors that observed for \acfirstmts{} and \acfirstfix{}.
-However, all tools solved more instances overall, largely due to the inclusion of the phenotype property, which typically reduces the number of solutions.
-Since phenotype properties are generally much simpler than the update functions describing network dynamics, we expect them to simplify the counting problem---often substantially.
+\paragraph{Conceptual Insights:}
 
-\begin{table}[h]
-    \centering
-    \begin{tabular}{m{4em} m{4em} m{4em} m{5em}} 
-    \toprule
-    % & & \rotatebox{60}{\clingo} & \rotatebox{60}{DynASP} & \rotatebox{60}{Ganak}  & \rotatebox{60}{ApproxMC} & \rotatebox{60}{ApproxASP} \\ 
-    & AEON & clingo & ApproxASP\\
-    \midrule
-    \#Solved & 231 & 308 & \textbf{464}\\
-    \midrule
-    PAR$2$ & 6428 & 5237 & \textbf{2919}\\
-    \bottomrule
-    \end{tabular}
-    \caption{The performance comparison of different counters on \acsecondmts{} counting problem.}
-    \label{table:c_mts_2_result}
-\end{table}
+Test
 
-\begin{table}[h]
-    \centering
-    \begin{tabular}{m{4em} m{3em} m{3em} m{4em} m{5em} m{5em}} 
-    \toprule
-    % & & \rotatebox{60}{\clingo} & \rotatebox{60}{DynASP} & \rotatebox{60}{Ganak}  & \rotatebox{60}{ApproxMC} & \rotatebox{60}{ApproxASP} \\ 
-    & AEON & clingo & GANAK & ApproxMC & ApproxASP\\
-    \midrule
-    \#Solved & 252 & 236 & 333 & \textbf{438} & 429\\
-    \midrule
-    PAR$2$ & 6099 & 6360 & 5030 & 3527 & \textbf{3499}\\
-    \bottomrule
-    \end{tabular}
-    \caption{The performance comparison of different counters on \acsecondfix{} counting problem.}
-    \label{table:c_fix_2_result}
-\end{table}
+\paragraph{Use-case Guidance:}
 
-\medskip
+Test
 
-\noindent\textbf{\acthirdmts{} and \acthirdfix{}} The results for problems \acthirdmts{} and \acthirdfix{} are presented in~\Cref{table:c_mts_3_result,table:c_fix_3_result}, respectively. 
-% Here, ADF is not included here, as it does not support the projected counting required for this task.
-This benchmark confirms the leading performance of ApproxASP in minimal trap space and fixed point counting as it was able to solve $644/645$ and $645/645$ problem instances for \acthirdmts{} and \acthirdfix{}, respectively.
-Here, ApproxASP significantly outperforms even ApproxMC, and outperforms all other tools by a factor of $2\times$ or more.
-In contrast to \acsecondmts{} and \acsecondfix{}, where all tools benefited from a reduced number of solutions, the presence of perturbations in this setting generally increases both the number of solutions and the underlying complexity of BNs.
-The key performance differentiation lies in the tools' ability to handle \emph{projected counting}.
-For this problem, the {\em independent support} for XOR constraints is derived from the BN perturbable variables. 
-Since this is only a subset of the network variables, the independent support size is relatively small, reducing the size of the XORs. 
-This results in the superior performance of ApproxASP and ApproxMC.
-Note that in these countings, the number of perturbable variables is at most $50$ and the count is upper-bounded by $3^{50}$.
+\subsection{RQ2: Influence of Network Reductions}
 
-\begin{table}[h]
-    \centering
-    \begin{tabular}{m{4em} m{4em} m{4em} m{5em}} 
-    \toprule
-    % & & \rotatebox{60}{\clingo} & \rotatebox{60}{DynASP} & \rotatebox{60}{Ganak}  & \rotatebox{60}{ApproxMC} & \rotatebox{60}{ApproxASP} \\ 
-    & AEON & clingo & ApproxASP\\
-    \midrule
-    \#Solved & 148 & 84 & \textbf{644}\\
-    \midrule
-    PAR$2$ & 7725 & 8711 & \textbf{283}\\
-    \bottomrule
-    \end{tabular}
-    \caption{The performance comparison of different counters on \acthirdmts{} counting problem.}
-    \label{table:c_mts_3_result}
-\end{table}
-\begin{table}[h]
-    \centering
-    \begin{tabular}{m{4em} m{3em} m{3em} m{4em}  m{5em} m{5em}} 
-    \toprule
-    % & & \rotatebox{60}{\clingo} & \rotatebox{60}{DynASP} & \rotatebox{60}{Ganak}  & \rotatebox{60}{ApproxMC} & \rotatebox{60}{ApproxASP} \\ 
-    & AEON & clingo & GANAK & ApproxMC & ApproxASP\\
-    \midrule
-    \#Solved & 248 & 99 & 286 & 600 & \textbf{645}\\
-    \midrule
-    PAR$2$ & 6176 & 8476 & 5757 & 2481 & \textbf{150}\\
-    \bottomrule
-    \end{tabular}
-    \caption{The performance comparison of different counters on \acthirdfix{} counting problem.}
-    \label{table:c_fix_3_result}
-\end{table}
+\paragraph{Reduction Effectiveness:}
 
-\subsection{Detailed Runtime Analysis}
+Test
 
-The runtime performance of different tools is depicted in~\Cref{fig:counting_task_1}.
-In these cactus plots, a point $(x,y)$ indicates that a tool successfully completes $x$ benchmark instances, with each instance taking at most $y$ seconds. 
-The plots highlight the superiority of the hashing-based counting techniques, ApproxASP and ApproxMC. 
-Notably, even in cases where ApproxASP solves fewer instances than ApproxMC (e.g. \acfirstfix{}), it is typically faster on simpler problem instances, which is also reflected in its PAR$2$ score.
+\paragraph{Which Reduction Helped Most:}
 
-% We empirically observe that both hashing-based counters ApproxASP and ApproxMC outperform other counters on different counting problems. 
-By examining the number of solutions successfully computed for different tasks, we observe that only ApproxASP, ApproxMC, and GANAK can reliably count instances having a large number of solutions (e.g. $\geq 10^{30}$). 
-Here, BDD-based counters like AEON perform somewhat better on fixed point problems compared to tools using plain enumeration (ADF, clingo), but cannot compete in the (arguably more complex) trap space problems.
+Test
 
-%We observe that for \acfirstfix{} and \acsecondfix{} counting problems, ApproxMC slightly outperforms ApproxASP. 
-%One possible reason is that ApproxMC employs a SAT solver on CNF formulas with XORs, 
-%while ApproxASP handles a disjunctive answer set program with XORs --- a task that is theoretically more challenging.
+\paragraph{ASP vs. SAT Benefit:}
 
-%Both ApproxASP and ApproxMC solve the most instances for the third counting variants (\acthirdmts{} and \acthirdfix{}). 
-%In this problem, the {\em independent support} for XOR constaints is derived from the pertubable variables. 
-%Since these perturbable variables are only subset of the original variables of BNs, the independent support size is relatively small in this counting variant, reducing the size of the XOR constraints.. 
-%As a result, both ApproxASP and ApproxMC solve the maximum number of instancs.
+Test
 
-The performance of GANAK and ApproxMC is also severely affected by the time required to compute their input CNF formulas (ref. \Cref{sec:related-work}). 
-Here, deriving the CNF problem representation is often considerably more time-consuming than computing the comparable ASP encoding.
-Our results reveal that, on average, it took about $545$ seconds to compute the CNF formula for each BN.
-Moreover, for $39$ BNs, the corresponding CNF could not be computed within the $5000$-second timeout.
-In contrast, the ASP encodings for all BNs—including the more challenging ones with perturbable variables—were generated within seconds.
-This demonstrates the superior flexibility of the ASP-based approach.
+\paragraph{Reductions and Approximate Counting:}
 
-Note that the approximate counters ApproxMC and ApproxASP provide an $(\varepsilon, \delta)$-guarantee. 
-Thus for each solved instance, we computed the {\em observed tolerance}, which is defined as $\mathsf{max}(\sfrac{\cnt}{\Card{\as{P}}}, \sfrac{\Card{\as{P}}}{\cnt}) - 1$, where $\cnt$ is the count returned by ApproxASP or ApproxMC, and $\as{P}$ denotes the answer set count of program $P$.
-On average, ApproxMC and ApproxASP exhibit observed tolerances of $0.032$ and $0.007$, respectively.
-The maximum observed tolerances were $0.39$ for ApproxASP and $0.07$ for ApproxMC, both of which are well below the theoretical bound of $\varepsilon = 0.8$.
+Test
 
-We evaluated ApproxMC and ApproxASP with a tighter guarantee, setting $\varepsilon = 0.01$ and $\delta = 0.05$.
-In these setting, ApproxASP solved $244, 243, 114, 258, 259, 130$ for \acfirstmts{}, \acsecondmts{}, \acthirdmts{}, \acfirstfix{}, \acsecondfix{}, and \acthirdfix{}, respectively, 
-while ApproxMC solved $263, 259, 120$ for \acfirstfix{}, \acsecondfix{}, and \acthirdfix{}, respectively. 
-Consequently, the higher precision significantly reduces the number of solved instances. 
+\paragraph{Overhead vs. Gain:}
 
-We compared the size of instances solved by different counting techniques across various counting problems. 
-We observed that, for minimal trap spaces, ApproxASP solved instances with up to $4000$ variables, while \tsconj~and AEON solved instances with up to $321$ variables.
-For fixed points, although there were large instances (up to $4000$ variables), these did not contain fixed points, making a direct comparison unfeasible.
-% \paragraph{Further Experimental Analysis.} 
-% We compare the number of minimal trap spaces and fixed points for instances solved by different counters and the statistics is shown in~\Cref{fig:count_1}. 
-% These plots demonstrate that the enumeration-based counters can count up to $2^{30}$ solutions, while the hashing-based approximate answer set counter ApproxASP is able to count instances having up to $2^{600}$.
+Test
 
-% Note that ApproxASP gives $(\varepsilon, \delta)$ on the number of answer sets. 
-% We assess the approximation quality, we compute the {\em observed tolerance} of computed counts~\cite{KESHFM22}.
-% The observed tolerance is defined as $\mathsf{max}(\sfrac{\cnt}{\Card{\answer{P}}}, \sfrac{\Card{\answer{P}}}{\cnt}) - 1$, where $\cnt$ is the count given by ApproxASP. 
-% Our experimental analysis reveals that the maximum observed tolerances of counting minimal trap spaces and fixed points were $0.113$ and $0.224$, respectively; which is far better than the theoretical value of $\varepsilon = 0.8$. 
+\paragraph{When are Reductions Most Helpful?}
 
+Test
 
+\paragraph{Guidance:}
 
+Test
 
-% We compare the number of minimal trap spaces and fixed points for instances solved by different counters and the statistics is shown in~\Cref{fig:count_2}. 
-% We statistics reveals that ApproxASP and GANAK are able to solve instances with very large number of minimal trap spaces and fixed points. 
-% These plots demonstrate that the enumeration-based counters can count up to $2^{30}$ solutions, while the hashing-based approximate answer set counter ApproxASP is able to count instances having up to $2^{600}$.
-% \begin{figure*}
-%     \centering
-%     \begin{subfigure}[t]{0.48\textwidth}
-%         \centering
-%         % include first image
-%         \includegraphics[width=0.9\linewidth]{../../scripts/python/output/out-14292413.pdf}
-%         \caption{\acsecondfix{}}
-%     \label{fig:count_fix_2}
-%     \end{subfigure}
-%     \begin{subfigure}[t]{0.48\textwidth}
-%         \centering
-%         % include first image
-%         \includegraphics[width=0.9\linewidth]{../../scripts/python/output/out-14279796.pdf}
-%         \caption{\acsecondmts{}}
-%     \label{fig:count_mts_2}
-%     \end{subfigure}
-%     \caption{The number of minimal trap spaces on the counting problem \acsecondmts{} and \acsecondfix{}.}
-%     \label{fig:count_2}
-% \end{figure*}
+\subsection{RQ3: Insights for ADFs via BN Counting}
 
+\paragraph{Counting Results for ADFs:}
 
+Test
 
+\paragraph{Use of Reductions:}
+
+Test
+
+\paragraph{Implications for Argumentation:}
+
+Test
+
+\paragraph{Future Directions (ADF):}
+
+Test

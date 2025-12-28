@@ -1,18 +1,6 @@
 \section{Preliminaries}\label{sec:preliminaries}
-In this section, we present background and some notations from propositional logic, Boolean networks, and answer set programming.
 
-\subsection{Propositional Formulas}
-
-In this work, we employ \(\twod = \{0, 1\}\) as the Boolean domain and \(\threed = \{0, 1, \star\}\) as the three-valued domain.
-Under propositional semantics, each {\em propositional variable} $v$ takes its value from $\twod$. 
-A propositional formula is defined recursively: the basic formulas include the Boolean constants $0$ and $1$, any variable $v$, and its negation $\neg{v}$. 
-Moreover, if a formula is prefixed by $\neg$ (not) or if two formulas are connected by a logical connective --- \(\land\) (conjunction), \(\lor\) (disjunction), and \(\leftrightarrow\) (bi-implication) --- the resulting expression is also a formula.
-A formula is in Conjunctive Normal Form (CNF) if it is expressed as a conjunction of disjunctions of literals (variables or their negations), and it is in Negation Normal Form (NNF) if all negations are applied directly to propositional variables.
-Any propositional formula can be converted into a semantically equivalent CNF or NNF by recursively applying specific rewriting rules for its logical connectives~\cite{BHV2009,MSS2023}.
-% The logical connectives used here are \(\land\) (conjunction), \(\lor\) (disjunction), \(\neg\) (negation), and \(\leftrightarrow\) (bi-implication).
-%The terms (propositional) \emph{atom} and \emph{variable} are used interchangeably.
-
-\subsection{Boolean Networks}\label{subsec:pre-bn}
+\subsection{Boolean Networks and Fixed Points}
 
 A Boolean Network (BN) \(\bn\) is defined as a finite set of Boolean functions over a finite set of Boolean variables, denoted by \(\var{\bn}\).
 Each variable \(v \in \var{\bn}\) is associated with a Boolean function \(f_v \colon \twod^{|\var{\bn}|} \to \twod\).
@@ -21,15 +9,6 @@ A variable \(v\) is considered a \emph{source variable} if \(f_v\) is the identi
 A state \(s\) of \(f\) is a Boolean vector \(s \in \twod^{|\var{\bn}|}\) that can be viewed as a mapping: \(s \colon \var{\bn} \to \twod\);
 we denote the value of variable $v$ in state $s$ by \(s_v\).
 For convenience, a state is often represented as a string of values (e.g., ``0110'' instead of (0, 1, 1, 0)).
-
-%Let \(x\) be a state of \(\bn\).
-%We use \(x[v \leftarrow a]\) to denote the state \(y\) so that \(y_v = a\) and \(y_u = x_u, \forall u \in \var{\bn}, u \neq v\) where \(a \in \twod\).
-%The Influence Graph (IG) of \(\bn\) (denoted by \(\ig{\bn} \)) is a signed directed graph \((V, E)\) on the set of signs \(\{\oplus, \ominus\}\) where \(V = \var{\bn}\), \((uv, \oplus) \in E\) (i.e., \(u\) positively affects the value of \(f_v\)) iff there is a state \(x\) such that \(f_v(x[u \leftarrow 0]) < f_v(x[u \leftarrow 1])\), and \((uv, \ominus) \in E\) (i.e., \(u\) negatively affects the value of \(f_v\)) iff there is a state \(x\) such that \(f_v(x[u \leftarrow 0]) > f_v(x[u \leftarrow 1])\).
-%A cycle (possibly a self loop) of a signed directed graph is positive (resp.\ negative) if its number of negative arcs is even (resp.\ odd).
-%A positive (resp.\ negative) feedback vertex set is a set of vertices that intersect all positive (resp.\ negative) cycles.
-%Let \(v^{-}\) (resp.\ \(v^{+}\)) denote the set of predecessors (resp.\ successors) of \(v\) in \(\ig{\bn}\).
-%Variable \(v\) is called a \emph{source variable} iff \(|v^{-}| = 1\) and \((vv, \oplus)\) is an arc of \(\ig{\bn}\).
-%Variable \(v\) is called an \emph{output variable} iff \(v^{+} = \emptyset\).
 
 At each discrete time step \(t\), each variable \(v\) can update its state  according to its Boolean function $f_v$; that is, $v$'s state at time $t+1$ is given by \(s'_v = f_v(s)\).
 An \emph{update scheme} specifies how these state updates occur over time~\cite{SKIKK2020}.
@@ -54,149 +33,34 @@ Notably, a fixed point of \(\bn\) is a special trap space in which all variables
 A trap space \(m\) is \emph{minimal} if there is no trap space \(m'\) such that \(\mathcal{S}[m'] \subset \mathcal{S}[m]\).
 Since an attractor is a subset-minimal trap set, a minimal trap space contains at least one attractor of the BN, regardless of the update scheme employed~\cite{HAH2015}.
 
-%%% An illustrative example
-\begin{example}\label{exam:straight-BN}
-	Let us consider BN \(\bn\) with \(\var{\bn} = \{a, b\}\), \(f_a = a \land \neg b\), and \(f_b = a\).
-	The synchronous STG of \(\bn\) is shown in Figure~\ref{fig:sstg-straight-BN-wildtype-knockout}a.
-	The set \(\{00, 01, 11\}\) is a trap set but not a trap space.
-	It is easy to check that \(\bn\) has three trap spaces: \(m_1 = 00\), \(m_2 = 0\star\), and \(m_3 = \star\star\).
-	Among these, \(m_1\) is a minimal trap space (also a fixed point) of \(\bn\). 
-	In this case, $m_1$ is also the only synchronous attractor of $\bn$.
-\end{example}
+\subsection{Fixed-Point Counting Problem Variants}
 
-\begin{figure}[!ht]
-	\centering
-	\captionsetup[subfigure]{justification=centering}
-	\begin{subfigure}{0.4\textwidth}
-		\centering
-		\begin{tikzpicture}[node distance=0.8cm and 0.8cm, every node/.style={scale=1.0}, line width = 0.2mm]
-			\node[] (0) [] {00};
-			\node[] (1) [right=of 0,xshift=0.3cm] {01};
-			\node[] (2) [below=of 0,yshift=-0.3cm] {10};
-			\node[] (3) [right=of 2,xshift=0.3cm] {11};
-			
-			\draw[->] (0) edge [loop left] (0);
-			\draw[->] (1) edge [] (0);
-			\draw[->] (2) edge [] (3);
-			\draw[->] (3) edge [] (1);
-			
-			\node[draw=black, thick, rounded corners, fit=(0), minimum width=1.5cm, minimum height=0.5cm] {};
-			\node[draw=black, dashed, thick, rounded corners, fit=(0)(1), minimum width=4cm, minimum height=1cm] {};
-			
-			\node[draw=black, dashed, thick, rounded corners, fit=(1)(3), minimum width=1.5cm, minimum height=2.4cm] {};
-			\node[draw=black, dashed, thick, rounded corners, fit=(0)(1)(2)(3), minimum width=5cm, minimum height=3cm] {};
-		\end{tikzpicture}
-		\caption{}
-	\end{subfigure}\begin{subfigure}{0.4\textwidth}
-		\centering
-		\begin{tikzpicture}[node distance=0.8cm and 0.8cm, every node/.style={scale=1.0}, line width = 0.2mm]
-			\node[] (0) [] {00};
-			\node[] (1) [right=of 0,xshift=0.3cm] {01};
-			\node[] (2) [below=of 0,yshift=-0.3cm] {10};
-			\node[] (3) [right=of 2,xshift=0.3cm] {11};
-			
-			\draw[->] (0) edge [loop left] (0);
-			\draw[->] (1) edge [] (0);
-			\draw[->] (2) edge [loop left] (2);
-			\draw[->] (3) edge [] (0);
-			
-			\node[draw=black, thick, rounded corners, fit=(0), minimum width=1.5cm, minimum height=0.5cm] {};
-			\node[draw=black, dashed, thick, rounded corners, fit=(0)(1), minimum width=4cm, minimum height=1cm] {};
-			\node[draw=black, thick, rounded corners, fit=(2), minimum width=1.5cm, minimum height=0.5cm] {};
-			\node[draw=black, dashed, thick, rounded corners, fit=(0)(2), minimum width=2cm, minimum height=2.8cm] {};
-			\node[draw=black, dashed, thick, rounded corners, fit=(0)(1)(2)(3), minimum width=5cm, minimum height=3cm] {};
-		\end{tikzpicture}
-		\caption{}
-	\end{subfigure}	
-	\caption{(a) Synchronous STG $\stg{\bn}$ of BN $\bn$ from Example~\ref{exam:straight-BN}. (b)~Synchronous STG \(\stg{\bn}\) where variable $b$ is subject to a {\em knockout} (i.e., its value is forced to $0$). Trap spaces (resp.\ minimal trap spaces) are enclosed by dashed (resp.\ solid) rectangular frames.}%
-	\label{fig:sstg-straight-BN-wildtype-knockout}
-\end{figure}
+\paragraph{C-FIX-1:}
 
-% \subsection{Disjunctive Logic Programs}\label{subsec:pre-dlp}
+Test
 
-% We follow the standard definition of propositional Disjunctive Logic Program (DLP)~\cite{DBLP:journals/cacm/BrewkaET11}.
-% A \emph{literal} is either an atom \(a\), or its negation \(\dng{a}\), where \(\dng{}\) denotes the default negation.
-% A DLP is a finite set of \emph{rules} of the form \(a_1 \lor \dots \lor a_L \leftarrow b_1, \dots, b_K, \dng{c_1}, \dots, \dng{c_J}\).
-% Given a rule \(r\) of the above form, we define \(\head{r} = \{a_1, \dots, a_L\}\), \(\pbody{r} = \{b_1, \dots, b_K\}\), and \(\nbody{r} = \{c_1, \dots, c_J\}\) as the \emph{head}, \emph{positive body}, and \emph{negative body} of \(r\).
-% Rule \(r\) is a \emph{fact} if \(\pbody{r} = \nbody{r} = \emptyset\) and an (integrity) \emph{constraint} if \(\head{r} = \emptyset\).
-% Rule \(r\) is \emph{normal} if \(|\head{r}| \leq 1\), and a Normal Logic Program (NLP) is a DLP whose rules are all normal.
-% A DLP is \emph{positive} if the negative body of every rule is empty.
-% Finally, we denote the sets of atoms occurring in a rule \(r\) and in a DLP \(P\) by \(\at{r} = \head{r} \cup \pbody{r} \cup \nbody{r}\) and \(\at{P} = \bigcup_{r \in P}\at{r}\), respectively.
+\paragraph{C-FIX-2:}
 
-\subsection{Answer Set Programming}
+Test
 
-An Answer Set Program (ASP) $P$ expresses logical constraints
-between a set of propositional variables.
-In answer set programming, such variables are also called \emph{atoms}, and the
-set of atoms appearing in $P$ is denoted by $\at{P}$.  
-For notational convenience, we will use the terms ``variable'' and ``atom'' interchangeably throughout the paper.
-%A \textit{normal (logic) program} is a set
-%of rules of the following form:
-%\begin{align}
-%\label{eq:basic_rule}
-%   \text{Rule $r$:~~}  a \leftarrow b_1, \ldots, b_m, \sim c_1, \ldots,  \sim c_n
-%\end{align}
+\paragraph{C-FIX-3:}
 
-%In the above rule, $\sim$ denotes \textit{default negation}, signifying \textit{failure to prove}~\cite{clark1978}.  
-%For rule $r$ shown above, atom ``$a$'' is
-%called the \textit{head of $r$} and is denoted $\head{r}$.  Similarly,
-%the set of literals $\{b_1, \ldots, b_m, \sim c_1, \ldots, \sim c_n\}$ is
-%called the \textit{body} of $r$.  Specifically, $\{b_1, \ldots, b_m\}$
-%are the \emph{positive body atoms}, denoted $\body{r}^+$, and $\{c_1,
-%\ldots, c_n\}$ are the \emph{negative body atoms}, denoted
-%$\body{r}^-$.  For purposes of the following discussion, we use
-%$\body{r}$ to denote the conjunction $b_1 \wedge \ldots \wedge b_m
-%\wedge \neg{c_1} \wedge \ldots \wedge \neg{c_n}$.
-\noindent An ASP is a finite set of \emph{rules} of the form 
- \[
- a_1 \lor \dots \lor a_k \leftarrow b_1, \dots, b_m, \dng{c_1}, \dots, \dng{c_n}
- \]
- where \(k, m, n \geq 0\) and $\dng{}$ denotes \textit{default negation}~\cite{clark1978}.
- Given a rule \(r\) of the above form, we define \(\head{r} = \{a_1, \dots, a_n\}\), \(\pbody{r} = \{b_1, \dots, b_m\}\), and \(\nbody{r} = \{c_1, \dots, c_n\}\) as the \emph{head}, \emph{positive body}, and \emph{negative body} of \(r\), respectively.
- The rule \(r\) is a \emph{fact} if \(\pbody{r} = \nbody{r} = \emptyset\) and an (integrity) \emph{constraint} if \(\head{r} = \emptyset\).
- We often use the notations $\top$ and $\bot$ to denote empty body ($\pbody{r} \cup \nbody{r} = \emptyset$) and empty head ($\head{r} = \emptyset$), respectively.
- The rule \(r\) is called \emph{normal} if \(|\head{r}| \leq 1\), and the ASP program is normal (or a normal logic program) if all its rules are normal.
- A program is called {\em disjunctive} if there is a rule $r \in P$ such that $|\head{r}| > 1$~\cite{BD1994}.
-%  An ASP is \emph{positive} if the negative body of every rule is empty.
-%  For purposes of the following discussion, we use $\body{r}$ to denote the conjunction $b_1 \wedge \ldots \wedge b_m \wedge \neg{c_1} \wedge \ldots \wedge \neg{c_n}$.
-%  Finally, we denote the sets of atoms occurring in a rule \(r\) and in an ASP \(P\) by \(\at{r} = \head{r} \cup \pbody{r} \cup \nbody{r}\) and \(\at{P} = \bigcup_{r \in P}\at{r}\), respectively.
+Test
 
-% \paragraph{Graphical Representation.} Given an ASP \(P\), the {\em positive dependency graph} of \(P\), denoted by \(\pdg{P} = (V,E)\), is a directed graph defined as follows: \(V = \at{P}\) and \((u, v) \in E\) iff there is a rule \(r \in P\) such that \(v \in \head{r}\) and \(u \in \pbody{r}\).
-% A set of atoms \(L \subseteq \at{P}\) is a \emph{loop} in \(P\) if it is a {\em directed cycle} in \(\pdg{P}\)~\cite{KS1992}.
-% An ASP \(P\) is \emph{tight} if it does not contain a loop~\cite{Fages1994,LL03}; otherwise, the program $P$ is called a {\em non-tight} program. 
+\subsection{Related Work on Fixed-Point Counting}
 
-\paragraph{Answer Set Semantics.} A subset \(M\) of atoms (called an \emph{interpretation}) \emph{satisfies} a rule \(r\) if \((\head{r} \cup \nbody{r}) \cap M \neq \emptyset\) or \(\pbody{r} \setminus M \neq \emptyset\).
-The interpretation \(M\) is a \emph{supported model} of \(P\) if it satisfies all rules of \(P\), denoted as \(M \models P\).
-The \emph{Gelfond-Lifschitz (GL) reduct} of the program \(P\) with respect to the interpretation \(M\) is defined as follows: \(P^{M} := \{\head{r} \leftarrow \pbody{r} | r \in P, M \cap \nbody{r} = \emptyset\}\)~\cite{gelfond1988stable}.
-The interpretation \(M\) is an \emph{answer set} (or a \emph{stable model}) of \(P\) if $\not \exists M\textprime \subsetneq M$ such that $M\textprime \models P^M$.
-% Note that the positive program \(P^M\) has a unique minimal model.
-We use the notation \(\as{P}\) to denote the set of answer sets of \(P\).
+\subsection{Abstract Dialectical Frameworks}
 
-\paragraph{Answer Set Counting.}\label{subsec:pre-answer-set-counting}
-Given an ASP \(P\), the {\em answer set counting} problem (denoted as \#ASP) seeks to compute the number of answer sets of \(P\), written as $\Card{\as{P}}$.
-The projected answer set counting problem (denoted as \#PASP) extends \#ASP by counting the number of distinct answer sets of $P$ with respect to a given set of \emph{projection atoms} \(I \subseteq \at{P}\).
-Two answer sets are considered equivalent if they differ only on atoms in $\at{P} \setminus I$~\cite{FH2019}.
-% We use the notation $\as{P, I}$ to denote the projected answer set of $P$ with respect to the projection set $I$.
-% We denote the projected answer sets of program $P$ and with respect to $I$ as $\as{P,I}$. Formally, \#PASP computes \(|\{M \cap I \mid M \in \as{P, \at{P}}\}|\).
-We denote the set of projected answer sets as $\as{P, I}$, so that \#PASP computes \(|\{M \cap I \mid M \in \as{P}\}|\).
-As a special case, when \(I = \at{P}\), \#PASP reduces to \#ASP.
-We use the notation $\projaspcount{P, I}$ to denote the {\em projected answer set count} of program $P$ w.r.t. projection atoms $I$.
+\subsection{Network Reduction Techniques}
 
-In the probably approximately correct (PAC) framework for answer set counting, given a program $P$ and a projection set $I$, the goal is to estimate a count $\cnt$ satisfying
-\begin{equation*}
-	\text{Pr}\left[\frac{\Card{\as{P, I}}}{(1 + \varepsilon)} \leq \cnt \leq (1 + \varepsilon) \times \Card{\as{P, I}}\right] \geq 1 - \delta
-\end{equation*}
-where $0 < \varepsilon < 1$ is the {\em tolerance} and $0 < \delta < 1$ is the {\em confidence}~\cite{KESHFM22,CMV2016}.
+\paragraph{Stripping Output Nodes:}
 
-% \textbf{Approximate Counting.} An approximate counting computes the number of solutions using a probabilistic algorithm in an approximate manner~\cite{DBLP:conf/cp/ChakrabortyMV13}.
-% Given a problem instance \(I\), let \(\text{Sol}(I)\) be the set of solutions of \(I\).
-% The approximate algorithm takes the input including the instance \(I\), a real number \(\varepsilon > 0\) called \emph{tolerance}, and a real number \(\delta\) with \(0 < \delta \leq 1\) called \emph{confidence}.
-% The output of the algorithm is a real number $\cnt$ that estimates the cardinality of \(\text{Sol}(I)\) based on the parameters \(\varepsilon\) and \(\delta\) following the inequality
-% \begin{equation*}
-% 	\text{Pr}\left[\frac{|\text{Sol}(I)|}{(1 + \varepsilon)} \leq \cnt \leq (1 + \varepsilon)\cdot|\text{Sol}(I)|\right] \geq 1 - \delta.
-% \end{equation*}
+Test
 
-% \textbf{Independent Support.} Approximate counting and sampling methods widely use independent support of a theory~\cite{DBLP:journals/constraints/IvriiMMV16}.
-% Given a DLP \(P\), a subset \(I\) of \(\at{P}\) is called an \emph{independent support} if for any answer sets \(M_1, M_2 \in \as{P}\), we have that \(M_1 \cap I = M_2 \cap I\) implies \(M_1 = M_2\).
-% Intuitively, an assignment on independent support \(I\) uniquely determines an answer set.
-% In addition, \(\at{P}\) is the \emph{trivial independent support} of \(P\).
+\paragraph{Propagating Fixed Nodes:}
+
+Test
+
+\paragraph{Suppressing Non-Autoregulated Nodes:}
+
+Test
